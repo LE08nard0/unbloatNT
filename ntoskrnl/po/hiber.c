@@ -699,12 +699,14 @@ PopHiberOpenFile(
 {
     FILE_END_OF_FILE_INFORMATION EndOfFile;
     FILE_VALID_DATA_LENGTH_INFORMATION ValidData;
+    FILE_ALLOCATION_INFORMATION Allocation;
+    FILE_STANDARD_INFORMATION StandardInfo;
     FILE_FS_SIZE_INFORMATION SizeInfo;
     PARTITION_INFORMATION_EX PartitionInfo;
     STARTING_VCN_INPUT_BUFFER StartingVcn;
     OBJECT_ATTRIBUTES ObjectAttributes;
     IO_STATUS_BLOCK IoStatus;
-    LARGE_INTEGER AllocationSize;
+    ULONG64 Available;
     LARGE_INTEGER Offset;
     UNICODE_STRING Path;
     PDEVICE_OBJECT StorageDevice;
@@ -718,13 +720,12 @@ PopHiberOpenFile(
     if (!NT_SUCCESS(Status))
         return Status;
 
-    AllocationSize.QuadPart = (LONGLONG)Size;
     InitializeObjectAttributes(&ObjectAttributes, &Path, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
     Status = ZwCreateFile(&PopHiber.FileHandle,
                           FILE_GENERIC_READ | FILE_GENERIC_WRITE | DELETE,
                           &ObjectAttributes,
                           &IoStatus,
-                          &AllocationSize,
+                          NULL,
                           FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM,
                           0,
                           FILE_OPEN_IF,
@@ -737,6 +738,47 @@ PopHiberOpenFile(
         PopHiber.FileHandle = NULL;
         return Status;
     }
+
+    //
+    //  Measure the volume before asking it to grow the file.  Requesting an
+    //  allocation the volume cannot satisfy is not handled gracefully by every
+    //  file system, and the caller already knows how to deal with
+    //  STATUS_DISK_FULL by retrying the reservation later.
+    //
+
+    Status = ZwQueryVolumeInformationFile(PopHiber.FileHandle, &IoStatus, &SizeInfo, sizeof(SizeInfo), FileFsSizeInformation);
+    if (!NT_SUCCESS(Status))
+        goto Failure;
+
+    PopHiber.ClusterSize = SizeInfo.BytesPerSector * SizeInfo.SectorsPerAllocationUnit;
+    if (PopHiber.ClusterSize == 0)
+    {
+        Status = STATUS_INVALID_DEVICE_STATE;
+        goto Failure;
+    }
+
+    Available = (ULONG64)SizeInfo.AvailableAllocationUnits.QuadPart * PopHiber.ClusterSize;
+
+    //
+    //  A reservation left behind by a previous boot is reused rather than
+    //  added to, so the space it already holds counts as available.
+    //
+
+    Status = ZwQueryInformationFile(PopHiber.FileHandle, &IoStatus, &StandardInfo, sizeof(StandardInfo), FileStandardInformation);
+    if (NT_SUCCESS(Status) && StandardInfo.AllocationSize.QuadPart > 0)
+        Available += (ULONG64)StandardInfo.AllocationSize.QuadPart;
+
+    if (Size > Available)
+    {
+        DPRINT1("Hibernation file needs %I64u MB, only %I64u MB available\n", Size >> 20, Available >> 20);
+        Status = STATUS_DISK_FULL;
+        goto Failure;
+    }
+
+    Allocation.AllocationSize.QuadPart = (LONGLONG)Size;
+    Status = ZwSetInformationFile(PopHiber.FileHandle, &IoStatus, &Allocation, sizeof(Allocation), FileAllocationInformation);
+    if (!NT_SUCCESS(Status))
+        goto Failure;
 
     EndOfFile.EndOfFile.QuadPart = (LONGLONG)Size;
     Status = ZwSetInformationFile(PopHiber.FileHandle, &IoStatus, &EndOfFile, sizeof(EndOfFile), FileEndOfFileInformation);
@@ -770,15 +812,10 @@ PopHiberOpenFile(
     if (!NT_SUCCESS(Status))
         goto Failure;
 
-    Status = ZwQueryVolumeInformationFile(PopHiber.FileHandle, &IoStatus, &SizeInfo, sizeof(SizeInfo), FileFsSizeInformation);
-    if (!NT_SUCCESS(Status))
-        goto Failure;
-
-    PopHiber.ClusterSize = SizeInfo.BytesPerSector * SizeInfo.SectorsPerAllocationUnit;
     Vpb = PopHiber.FileObject->Vpb;
     if (Vpb == NULL && PopHiber.FileObject->DeviceObject != NULL)
         Vpb = PopHiber.FileObject->DeviceObject->Vpb;
-    if (PopHiber.ClusterSize == 0 || Vpb == NULL || Vpb->RealDevice == NULL)
+    if (Vpb == NULL || Vpb->RealDevice == NULL)
     {
         Status = STATUS_INVALID_DEVICE_STATE;
         goto Failure;
