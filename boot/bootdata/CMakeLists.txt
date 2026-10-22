@@ -268,4 +268,7 @@ add_livecd_shortcut("Spider Solitaire"
 add_livecd_shortcut("WineMine"
     "shell:system\\winmine.exe" ICON_INDEX 0
     DESTINATION "${dir_startmenu_games}")
+add_livecd_shortcut("InkBall"
+    "shell:system\\inkball.exe" ICON_INDEX 0
+    DESTINATION "${dir_startmenu_games}")
 
