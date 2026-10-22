@@ -259,13 +259,4 @@ add_livecd_shortcut("WordPad"
     "shell:system\\wordpad.exe" ICON_INDEX 0
     WORKDIR "${envvar_homedrive}${envvar_homepath}"
     DESTINATION "${dir_startmenu_accessories}")
-add_livecd_shortcut("Solitaire"
-    "shell:system\\sol.exe" ICON_INDEX 0
-    DESTINATION "${dir_startmenu_games}")
-add_livecd_shortcut("Spider Solitaire"
-    "shell:system\\spider.exe" ICON_INDEX 0
-    DESTINATION "${dir_startmenu_games}")
-add_livecd_shortcut("WineMine"
-    "shell:system\\winmine.exe" ICON_INDEX 0
-    DESTINATION "${dir_startmenu_games}")
 

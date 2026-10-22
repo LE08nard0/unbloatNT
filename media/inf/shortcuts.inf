@@ -10,7 +10,6 @@ SystemToolsShortcuts=2, %ACCESSORIES%\%SYSTOOLS%
 AccessibilityShortcuts=2, %ACCESSORIES%\%ACCESSIBILITY%
 EntertainmentShortcuts=2, %ACCESSORIES%\%ENTERTAINMENT%
 CommunicationsShortcuts=2, %ACCESSORIES%\%COMMUNICATIONS%
-GamesShortcuts=2, %GAMES%
 QuickLaunchShortcuts=26, Microsoft\Internet Explorer\Quick Launch
 
 [ProgramShortcuts]
@@ -56,10 +55,6 @@ QuickLaunchShortcuts=26, Microsoft\Internet Explorer\Quick Launch
 %SystemRoot%\system32\mplay32.exe, %MPLAY_TITLE%, %MPLAY_DESC%, 0, %HOMEDRIVE%%HOMEPATH%
 %SystemRoot%\system32\sndrec32.exe, %SNDREC32_TITLE%, %SNDREC32_DESC%, 0, %HOMEDRIVE%%HOMEPATH%
 
-[GamesShortcuts]
-%SystemRoot%\system32\sol.exe, %SOL_TITLE%, %SOL_DESC%, 0
-%SystemRoot%\system32\winmine.exe, %WINMINE_TITLE%, %WINMINE_DESC%, 0
-%SystemRoot%\system32\spider.exe, %SPIDER_TITLE%, %SPIDER_DESC%, 0
 
 [QuickLaunchShortcuts]
 %SystemRoot%\explorer.exe, %EXPLORER_TITLE%, %EXPLORER_DESC%, 1, %HOMEDRIVE%%HOMEPATH%
