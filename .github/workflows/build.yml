@@ -15,6 +15,10 @@ jobs:
             config: Debug
             ntver: '0xA00'
           - compiler: gcc
+            arch: i386
+            config: Release
+            ntver: '0xA00'
+          - compiler: gcc
             arch: amd64
             config: Debug
             ntver: '0xA00'
