@@ -153,6 +153,198 @@ DEFINE_XPDM_D3DKMT_STUB(D3DKMTUnregisterTrimNotification,
                         _Inout_,
                         struct _D3DKMT_UNREGISTERTRIMNOTIFICATION)
 
+/*
+ * Newer win32k thunks that are always built. XPDM has no kernel graphics
+ * runtime behind them, so they report the operation as unsupported.
+ */
+struct _D3DKMT_ADJUSTFULLSCREENGAMMA;
+struct _D3DKMT_CONFIGURESHAREDRESOURCE;
+struct _D3DKMT_CONNECT_DOORBELL;
+struct _D3DKMT_CREATEHWCONTEXT;
+struct _D3DKMT_CREATENATIVEFENCE;
+struct _D3DKMT_CREATEPROTECTEDSESSION;
+struct _D3DKMT_CREATE_DOORBELL;
+struct _D3DKMT_DESTROYHWCONTEXT;
+struct _D3DKMT_DESTROYPROTECTEDSESSION;
+struct _D3DKMT_DESTROY_DOORBELL;
+struct _D3DKMT_FLUSHHEAPTRANSITIONS;
+struct _D3DKMT_GETCONTEXTINPROCESSSCHEDULINGPRIORITY;
+struct _D3DKMT_GETNATIVEFENCELOGDETAIL;
+struct _D3DKMT_GETPROCESSDEVICEREMOVALSUPPORT;
+struct _D3DKMT_GET_POST_COMPOSITION_CAPS;
+struct _D3DKMT_MARKDEVICEASERROR;
+struct _D3DKMT_NOTIFY_WORK_SUBMISSION;
+struct _D3DKMT_OPENKEYEDMUTEXFROMNTHANDLE;
+struct _D3DKMT_OPENNATIVEFENCEFROMNTHANDLE;
+struct _D3DKMT_OPENPROTECTEDSESSIONFROMNTHANDLE;
+struct _D3DKMT_OUTPUTDUPLPRESENTTOHWQUEUE;
+struct _D3DKMT_PRESENT_REDIRECTED;
+struct _D3DKMT_QUERYFSEBLOCK;
+struct _D3DKMT_QUERYPROCESSOFFERINFO;
+struct _D3DKMT_QUERYPROTECTEDSESSIONINFOFROMNTHANDLE;
+struct _D3DKMT_QUERYPROTECTEDSESSIONSTATUS;
+struct _D3DKMT_QUERYREMOTEVIDPNSOURCEFROMGDIDISPLAYNAME;
+struct _D3DKMT_SETCONTEXTINPROCESSSCHEDULINGPRIORITY;
+struct _D3DKMT_SETFSEBLOCK;
+struct _D3DKMT_SETHWPROTECTIONTEARDOWNRECOVERY;
+struct _D3DKMT_SETVIDPNSOURCEHWPROTECTION;
+struct _D3DKMT_SET_COLORSPACE_TRANSFORM;
+struct _D3DKMT_TRIMPROCESSCOMMITMENT;
+
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTAdjustFullscreenGamma,
+                        _In_,
+                        struct _D3DKMT_ADJUSTFULLSCREENGAMMA)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTConfigureSharedResource,
+                        _In_,
+                        CONST struct _D3DKMT_CONFIGURESHAREDRESOURCE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTConnectDoorbell,
+                        _In_,
+                        struct _D3DKMT_CONNECT_DOORBELL)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTCreateDoorbell,
+                        _In_,
+                        struct _D3DKMT_CREATE_DOORBELL)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTCreateHwContext,
+                        _Inout_,
+                        struct _D3DKMT_CREATEHWCONTEXT)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTCreateNativeFence,
+                        _Inout_,
+                        struct _D3DKMT_CREATENATIVEFENCE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTCreateProtectedSession,
+                        _Inout_,
+                        struct _D3DKMT_CREATEPROTECTEDSESSION)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTDestroyDoorbell,
+                        _In_,
+                        struct _D3DKMT_DESTROY_DOORBELL)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTDestroyHwContext,
+                        _In_,
+                        CONST struct _D3DKMT_DESTROYHWCONTEXT)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTDestroyProtectedSession,
+                        _Inout_,
+                        struct _D3DKMT_DESTROYPROTECTEDSESSION)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTFlushHeapTransitions,
+                        _In_,
+                        struct _D3DKMT_FLUSHHEAPTRANSITIONS)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetContextInProcessSchedulingPriority,
+                        _Inout_,
+                        struct _D3DKMT_GETCONTEXTINPROCESSSCHEDULINGPRIORITY)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetNativeFenceLogDetail,
+                        _Inout_,
+                        struct _D3DKMT_GETNATIVEFENCELOGDETAIL)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetPostCompositionCaps,
+                        _Inout_,
+                        struct _D3DKMT_GET_POST_COMPOSITION_CAPS)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetProcessDeviceRemovalSupport,
+                        _Inout_,
+                        struct _D3DKMT_GETPROCESSDEVICEREMOVALSUPPORT)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTMarkDeviceAsError,
+                        _In_,
+                        struct _D3DKMT_MARKDEVICEASERROR)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTNotifyWorkSubmission,
+                        _In_,
+                        struct _D3DKMT_NOTIFY_WORK_SUBMISSION)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOpenKeyedMutexFromNtHandle,
+                        _Inout_,
+                        struct _D3DKMT_OPENKEYEDMUTEXFROMNTHANDLE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOpenNativeFenceFromNtHandle,
+                        _Inout_,
+                        struct _D3DKMT_OPENNATIVEFENCEFROMNTHANDLE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOpenProtectedSessionFromNtHandle,
+                        _Inout_,
+                        struct _D3DKMT_OPENPROTECTEDSESSIONFROMNTHANDLE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOutputDuplPresentToHwQueue,
+                        _In_,
+                        CONST struct _D3DKMT_OUTPUTDUPLPRESENTTOHWQUEUE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTPresentRedirected,
+                        _In_,
+                        struct _D3DKMT_PRESENT_REDIRECTED)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryFSEBlock,
+                        _Inout_,
+                        struct _D3DKMT_QUERYFSEBLOCK)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryProcessOfferInfo,
+                        _Inout_,
+                        struct _D3DKMT_QUERYPROCESSOFFERINFO)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryProtectedSessionInfoFromNtHandle,
+                        _Inout_,
+                        struct _D3DKMT_QUERYPROTECTEDSESSIONINFOFROMNTHANDLE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryProtectedSessionStatus,
+                        _Inout_,
+                        struct _D3DKMT_QUERYPROTECTEDSESSIONSTATUS)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryRemoteVidPnSourceFromGdiDisplayName,
+                        _Inout_,
+                        struct _D3DKMT_QUERYREMOTEVIDPNSOURCEFROMGDIDISPLAYNAME)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTSetContextInProcessSchedulingPriority,
+                        _In_,
+                        CONST struct _D3DKMT_SETCONTEXTINPROCESSSCHEDULINGPRIORITY)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTSetFSEBlock,
+                        _In_,
+                        CONST struct _D3DKMT_SETFSEBLOCK)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTSetHwProtectionTeardownRecovery,
+                        _In_,
+                        struct _D3DKMT_SETHWPROTECTIONTEARDOWNRECOVERY)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTSetMonitorColorSpaceTransform,
+                        _In_,
+                        struct _D3DKMT_SET_COLORSPACE_TRANSFORM)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTSetVidPnSourceHwProtection,
+                        _In_,
+                        struct _D3DKMT_SETVIDPNSOURCEHWPROTECTION)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTTrimProcessCommitment,
+                        _Inout_,
+                        struct _D3DKMT_TRIMPROCESSCOMMITMENT)
+
+struct _D3DDDI_GETRESOURCEPRESENTPRIVATEDRIVERDATA;
+struct _D3DKMT_GETSHAREDRESOURCEADAPTERLUID;
+struct _D3DKMT_INVALIDATECACHE;
+struct _D3DKMT_OPENADAPTERFROMHDC;
+struct _D3DKMT_OPENRESOURCE;
+struct _D3DKMT_QUERYRESOURCEINFO;
+struct _D3DKMT_RECLAIMALLOCATIONS2;
+struct D3DDDI_UPDATEALLOCPROPERTY;
+
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetResourcePresentPrivateDriverData,
+                        _Inout_,
+                        struct _D3DDDI_GETRESOURCEPRESENTPRIVATEDRIVERDATA)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTGetSharedResourceAdapterLuid,
+                        _Inout_,
+                        struct _D3DKMT_GETSHAREDRESOURCEADAPTERLUID)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTInvalidateCache,
+                        _In_,
+                        CONST struct _D3DKMT_INVALIDATECACHE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOpenAdapterFromHdc,
+                        _Inout_,
+                        struct _D3DKMT_OPENADAPTERFROMHDC)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTOpenResource,
+                        _Inout_,
+                        struct _D3DKMT_OPENRESOURCE)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTQueryResourceInfo,
+                        _Inout_,
+                        struct _D3DKMT_QUERYRESOURCEINFO)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTReclaimAllocations2,
+                        _Inout_,
+                        struct _D3DKMT_RECLAIMALLOCATIONS2)
+DEFINE_XPDM_D3DKMT_STUB(D3DKMTUpdateAllocationProperty,
+                        _Inout_,
+                        struct D3DDDI_UPDATEALLOCPROPERTY)
+
+NTSTATUS
+APIENTRY
+D3DKMTPresentWithOverlays(
+    _In_ const VOID *Overlays,
+    _In_ const VOID *Present)
+{
+    UNREFERENCED_PARAMETER(Overlays);
+    UNREFERENCED_PARAMETER(Present);
+    return STATUS_NOT_SUPPORTED;
+}
+
+NTSTATUS
+APIENTRY
+D3DKMTRegisterVailProcess(
+    _In_ GUID *Guid)
+{
+    UNREFERENCED_PARAMETER(Guid);
+    return STATUS_NOT_SUPPORTED;
+}
+
 NTSTATUS
 APIENTRY
 D3DKMTSetProcessSchedulingPriorityClass(

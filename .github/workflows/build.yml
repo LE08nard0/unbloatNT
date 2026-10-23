@@ -1,5 +1,13 @@
 name: Build
-on: [push, pull_request]
+on:
+  push:
+    branches: [main-nt10]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -14,6 +22,16 @@ jobs:
             arch: i386
             config: Debug
             ntver: '0xA00'
+          - compiler: gcc
+            arch: i386
+            config: Release
+            ntver: '0xA00'
+          - compiler: gcc
+            arch: i386
+            variant: -xpdm
+            config: Release
+            ntver: '0xA00'
+            graphics: XPDM
           - compiler: gcc
             arch: amd64
             config: Debug
@@ -109,6 +127,7 @@ jobs:
         [ "${{matrix.compiler}}" = "clang" ] && FLAGS="$FLAGS --clang"
         [ "${{matrix.compiler}}" = "gcc" ] && FLAGS="$FLAGS --gcc"
         [ "${{matrix.config}}" = "Release" ] && FLAGS="$FLAGS -r"
+        [ -n "${{matrix.graphics}}" ] && FLAGS="$FLAGS -DREACTOS_GRAPHICS_DRIVER_MODEL=${{matrix.graphics}}"
         [ -n "${{matrix.profile}}" ] && FLAGS="$FLAGS -DROSCONFIG_PROFILE=${{matrix.profile}}"
         [ "${{matrix.compiler}}" = "clang" ] && case "${{matrix.arch}}" in amd64|arm64) FLAGS="$FLAGS -DENABLE_MESA_LLVMPIPE=ON" ;; esac
         if [ "${{steps.cache_llvm.outputs.cache-hit}}" = "true" ]; then
@@ -140,9 +159,44 @@ jobs:
         fi
 
     - name: Build images
+      shell: bash
       run: |
         . "$HOME/.local/opt/rosbe/rosbe-env.sh"
-        ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0
+        ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+        exit ${PIPESTATUS[0]}
+
+    - name: Report build errors
+      if: failure()
+      shell: bash
+      run: |
+        python3 - "$GITHUB_WORKSPACE/build.log" <<'PY'
+        import re, sys, os
+        p = sys.argv[1]
+        if not os.path.exists(p):
+            print("::error title=Build images failed::no build.log"); sys.exit(0)
+        log = open(p, errors="replace").read().splitlines()
+        undef = sorted(set(re.findall(r"undefined reference to `([^']+)'", "\n".join(log))))
+        failed = sorted(set(l.split("FAILED:", 1)[1].strip() for l in log if "FAILED:" in l))
+        errs, seen = [], set()
+        for l in log:
+            if " error:" in l or "fatal error" in l or "No rule to make" in l:
+                k = re.sub(r":\d+:\d+:", ":", l)
+                if k not in seen:
+                    seen.add(k); errs.append(l.strip())
+        out = ["FAILED targets:"] + failed[:40]
+        if undef:
+            out += ["undefined symbols (%d):" % len(undef), " ".join(undef)]
+        out += ["errors:"] + errs[:80]
+        for n, l in enumerate(log):
+            if "collect2: error" in l:
+                ctx = [x.strip()[:300] for x in log[max(0, n - 25):n + 1]]
+                out = ["--- linker context ---"] + ctx + out
+                break
+        if not failed and not errs and not undef:
+            out += log[-60:]
+        msg = "\n".join(out)[:60000]
+        print("::error title=Build images failed::" + msg.replace("%", "%25").replace("\r", "").replace("\n", "%0A"))
+        PY
 
     - name: Print ccache statistics
       if: ${{ always() && steps.ccache_restore.outcome == 'success' }}

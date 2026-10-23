@@ -1,5 +1,11 @@
 spec2def(dxva2.dll dxva2.spec ADD_IMPORTLIB)
 
+if(NOT REACTOS_USE_WDDM)
+    # d3dumddi.h declares WDDM 2 UMD types that the Vista UMD ABI hides.
+    remove_definitions(-DD3D_UMD_INTERFACE_VERSION=0x000C)
+    add_definitions(-DD3D_UMD_INTERFACE_VERSION=0x6003)
+endif()
+
 add_library(dxva2 MODULE decoder.c main.c ${CMAKE_CURRENT_BINARY_DIR}/dxva2.def ${CMAKE_CURRENT_BINARY_DIR}/dxva2_stubs.c)
 set_module_type(dxva2 win32dll)
 target_compile_definitions(dxva2 PRIVATE __WINESRC__)

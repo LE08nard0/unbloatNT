@@ -487,3 +487,30 @@ HRESULT WINAPI D3D11On12CreateDevice(IUnknown *device, UINT flags,
 
     return E_NOTIMPL;
 }
+
+#if defined(__REACTOS__) && !defined(REACTOS_D3D11_NATIVE_UMD)
+/*
+ * The private ReactOS entry points below are implemented by the native UMD
+ * path, which is only built for WDDM. Their callers resolve them through
+ * GetProcAddress and fall back to the wined3d path when they report
+ * DXGI_ERROR_UNSUPPORTED, so XPDM builds export them with that answer.
+ */
+HRESULT WINAPI RosD3D11CreateDeviceForAdapterLuid(const LUID *luid, UINT flags, ID3D11Device **out)
+{
+    TRACE("luid %p, flags %#x, out %p.\n", luid, flags, out);
+
+    if (out)
+        *out = NULL;
+    return DXGI_ERROR_UNSUPPORTED;
+}
+
+HRESULT WINAPI RosD3D11CreateD3D10Device(IDXGIAdapter *adapter, UINT flags,
+        D3D_FEATURE_LEVEL feature_level, ID3D10Device **device)
+{
+    TRACE("adapter %p, flags %#x, feature_level %#x, device %p.\n", adapter, flags, feature_level, device);
+
+    if (device)
+        *device = NULL;
+    return DXGI_ERROR_UNSUPPORTED;
+}
+#endif
