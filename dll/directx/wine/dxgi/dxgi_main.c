@@ -262,3 +262,19 @@ HRESULT WINAPI DXGIGetDebugInterface1(UINT flags, REFIID iid, void **debug)
     WARN("Returning DXGI_ERROR_SDK_COMPONENT_MISSING.\n");
     return DXGI_ERROR_SDK_COMPONENT_MISSING;
 }
+
+#if defined(__REACTOS__) && !defined(REACTOS_DXGI_D3DKMT_ADAPTER_ORDER)
+/*
+ * reactos.c is only built with the D3DKMT adapter order, but this export
+ * only records a process-wide declaration and does not depend on WDDM.
+ * Keep the same behaviour for builds that do not compile reactos.c.
+ */
+static LONG dxgi_adapter_removal_support;
+
+HRESULT WINAPI DXGIDeclareAdapterRemovalSupport(void)
+{
+    if (InterlockedExchange(&dxgi_adapter_removal_support, 1))
+        return DXGI_ERROR_ALREADY_EXISTS;
+    return S_OK;
+}
+#endif
