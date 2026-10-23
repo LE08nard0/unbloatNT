@@ -189,8 +189,8 @@ jobs:
         out += ["errors:"] + errs[:80]
         for n, l in enumerate(log):
             if "collect2: error" in l:
-                ctx = [x.strip() for x in log[max(0, n - 120):n + 1] if len(x) < 400]
-                out += ["--- linker context ---"] + ctx[-60:]
+                ctx = [x.strip()[:300] for x in log[max(0, n - 25):n + 1]]
+                out = ["--- linker context ---"] + ctx + out
                 break
         if not failed and not errs and not undef:
             out += log[-60:]
