@@ -1,8 +1,8 @@
 
-if(REACTOS_USE_WDDM)
-    remove_definitions(-DDXGKDDI_INTERFACE_VERSION=0x1052)
-    add_definitions(-DDXGKDDI_INTERFACE_VERSION=0x11007)
-endif()
+# icdload.c enumerates adapters through the WDDM 2 thunks in every graphics
+# model, so the newer declarations are needed regardless of the model.
+remove_definitions(-DDXGKDDI_INTERFACE_VERSION=0x1052)
+add_definitions(-DDXGKDDI_INTERFACE_VERSION=0x11007)
 
 spec2def(opengl32.dll opengl32.spec ADD_IMPORTLIB)
 

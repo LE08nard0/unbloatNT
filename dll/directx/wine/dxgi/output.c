@@ -627,7 +627,7 @@ static BOOL STDMETHODCALLTYPE dxgi_output_SupportsOverlays(IDXGIOutput6 *iface)
 static HRESULT STDMETHODCALLTYPE dxgi_output_CheckOverlaySupport(IDXGIOutput6 *iface,
         DXGI_FORMAT format, IUnknown *device, UINT *flags)
 {
-#ifdef __REACTOS__
+#if defined(__REACTOS__) && defined(REACTOS_DXGI_D3DKMT_ADAPTER_ORDER)
     struct dxgi_output *output = impl_from_IDXGIOutput6(iface);
     struct wined3d_adapter_identifier adapter_id = {0};
     LUID luid;

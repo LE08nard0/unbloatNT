@@ -171,7 +171,7 @@ jobs:
       run: |
         LOG="$GITHUB_WORKSPACE/build.log"
         [ -f "$LOG" ] || { echo "::error title=Build images failed::no build.log"; exit 0; }
-        grep -nE "error:|undefined reference|FAILED:|fatal|No rule to make" "$LOG" | head -60 > errs.txt || true
+        grep -nE "error:|undefined reference|FAILED:|No rule to make" "$LOG" | sort -t: -k2 -u | head -200 > errs.txt || true
         [ -s errs.txt ] || tail -n 60 "$LOG" > errs.txt
         python3 -c "d=open('errs.txt',errors='replace').read().replace('%','%25').replace('\r','').replace('\n','%0A');print('::error title=Build images failed::'+d)"
 
