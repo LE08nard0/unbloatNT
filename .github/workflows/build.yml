@@ -187,6 +187,10 @@ jobs:
         if undef:
             out += ["undefined symbols (%d):" % len(undef), " ".join(undef)]
         out += ["errors:"] + errs[:80]
+        for n, l in enumerate(log):
+            if "collect2: error" in l:
+                out += ["--- linker context ---"] + [x.strip() for x in log[max(0, n - 40):n + 1]]
+                break
         if not failed and not errs and not undef:
             out += log[-60:]
         msg = "\n".join(out)[:60000]
