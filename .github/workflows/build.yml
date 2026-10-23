@@ -1,5 +1,13 @@
 name: Build
-on: [push, pull_request]
+on:
+  push:
+    branches: [main-nt10]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -153,7 +161,12 @@ jobs:
     - name: Build images
       run: |
         . "$HOME/.local/opt/rosbe/rosbe-env.sh"
-        ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0
+        set -o pipefail
+        if ! ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0 2>&1 | tee build.log; then
+          MSG=$(grep -E "error:|undefined reference|FAILED:|fatal" build.log | head -60 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')
+          echo "::error title=Build images failed::$MSG"
+          exit 1
+        fi
 
     - name: Print ccache statistics
       if: ${{ always() && steps.ccache_restore.outcome == 'success' }}
