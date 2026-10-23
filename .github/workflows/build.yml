@@ -19,6 +19,12 @@ jobs:
             config: Release
             ntver: '0xA00'
           - compiler: gcc
+            arch: i386
+            variant: -xpdm
+            config: Release
+            ntver: '0xA00'
+            graphics: XPDM
+          - compiler: gcc
             arch: amd64
             config: Debug
             ntver: '0xA00'
@@ -113,6 +119,7 @@ jobs:
         [ "${{matrix.compiler}}" = "clang" ] && FLAGS="$FLAGS --clang"
         [ "${{matrix.compiler}}" = "gcc" ] && FLAGS="$FLAGS --gcc"
         [ "${{matrix.config}}" = "Release" ] && FLAGS="$FLAGS -r"
+        [ -n "${{matrix.graphics}}" ] && FLAGS="$FLAGS -DREACTOS_GRAPHICS_DRIVER_MODEL=${{matrix.graphics}}"
         [ -n "${{matrix.profile}}" ] && FLAGS="$FLAGS -DROSCONFIG_PROFILE=${{matrix.profile}}"
         [ "${{matrix.compiler}}" = "clang" ] && case "${{matrix.arch}}" in amd64|arm64) FLAGS="$FLAGS -DENABLE_MESA_LLVMPIPE=ON" ;; esac
         if [ "${{steps.cache_llvm.outputs.cache-hit}}" = "true" ]; then
