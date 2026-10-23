@@ -159,14 +159,21 @@ jobs:
         fi
 
     - name: Build images
+      shell: bash
       run: |
         . "$HOME/.local/opt/rosbe/rosbe-env.sh"
-        set -o pipefail
-        if ! ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0 2>&1 | tee build.log; then
-          MSG=$(grep -E "error:|undefined reference|FAILED:|fatal" build.log | head -60 | sed ':a;N;$!ba;s/%/%25/g;s/\n/%0A/g')
-          echo "::error title=Build images failed::$MSG"
-          exit 1
-        fi
+        ninja -C ${{steps.configure.outputs.outdir}} bootcd liberntimg liberntvhd -k0 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+        exit ${PIPESTATUS[0]}
+
+    - name: Report build errors
+      if: failure()
+      shell: bash
+      run: |
+        LOG="$GITHUB_WORKSPACE/build.log"
+        [ -f "$LOG" ] || { echo "::error title=Build images failed::no build.log"; exit 0; }
+        grep -nE "error:|undefined reference|FAILED:|fatal|No rule to make" "$LOG" | head -60 > errs.txt || true
+        [ -s errs.txt ] || tail -n 60 "$LOG" > errs.txt
+        python3 -c "d=open('errs.txt',errors='replace').read().replace('%','%25').replace('\r','').replace('\n','%0A');print('::error title=Build images failed::'+d)"
 
     - name: Print ccache statistics
       if: ${{ always() && steps.ccache_restore.outcome == 'success' }}
