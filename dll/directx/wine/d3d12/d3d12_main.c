@@ -322,8 +322,7 @@ d3d12_dred_settings_create(struct d3d12_dred_state *state, IUnknown *owner, REFI
 
     if (!(settings = HeapAlloc(GetProcessHeap(), 0, sizeof(*settings))))
         return E_OUTOFMEMORY;
-    settings->ID3D12DeviceRemovedExtendedDataSettings2_iface.lpVtbl =
-            (ID3D12DeviceRemovedExtendedDataSettings2Vtbl *)&d3d12_dred_settings_vtbl;
+    settings->ID3D12DeviceRemovedExtendedDataSettings2_iface.lpVtbl = &d3d12_dred_settings_vtbl;
     settings->refcount = 1;
     settings->state = state;
     if ((settings->owner = owner))
