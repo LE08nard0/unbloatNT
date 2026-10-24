@@ -37,8 +37,9 @@ add_library(d3d12 MODULE
 
 set_module_type(d3d12 win32dll ENTRYPOINT 0)
 target_include_directories(d3d12 PRIVATE ${REACTOS_SOURCE_DIR}/sdk/lib/3rdparty/vkd3d/include)
+target_compile_definitions(d3d12 PRIVATE __WINESRC__)
 if(REACTOS_USE_WDDM)
-    target_compile_definitions(d3d12 PRIVATE REACTOS_D3D12_NATIVE_UMD __WINESRC__)
+    target_compile_definitions(d3d12 PRIVATE REACTOS_D3D12_NATIVE_UMD)
     target_link_libraries(d3d12 cpprt)
 endif()
 target_link_libraries(d3d12 dx10guid uuid wine)
