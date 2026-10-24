@@ -33,6 +33,12 @@ jobs:
             ntver: '0xA00'
             graphics: XPDM
           - compiler: gcc
+            arch: i386
+            variant: -xpdm
+            config: Debug
+            ntver: '0xA00'
+            graphics: XPDM
+          - compiler: gcc
             arch: amd64
             config: Debug
             ntver: '0xA00'
